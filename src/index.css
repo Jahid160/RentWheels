@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+li{
+  background-color: greenyellow;
+  padding: 5px;
+  gap: 10px;
+  
+}
+
+.add-from{
+  @apply w-full text-black  border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring focus:ring-blue-200 transition-all
+}
