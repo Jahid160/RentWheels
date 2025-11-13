@@ -11,3 +11,9 @@ li{
 .add-from{
   @apply w-full text-black  border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring focus:ring-blue-200 transition-all
 }
+
+.active{
+  background-color: rgb(235, 7, 83);
+  /* color: gray; */
+  text-decoration: underline;
+}

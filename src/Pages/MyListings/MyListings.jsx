@@ -1,10 +1,15 @@
 import React, { use, useEffect, useState } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import CarCard from '../../Components/CarCard/CarCard';
+import { Link, useNavigate } from 'react-router';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 const MyListings = () => {
+  const navigate = useNavigate()
   const {user} = use(AuthContext)
     const [models, setModels] = useState([])
+    const [updateUi,setUpdateUi]=useState(false)
     const [loading, setLoading] = useState(true)
 
     useEffect(()=> {
@@ -28,6 +33,47 @@ const MyListings = () => {
         return <div> Please wait ... Loading...</div>
     }
 
+    const handleDelete = (_id) =>{
+    Swal.fire({
+  title: "Are you sure?",
+  text: "You won't be able to revert this!",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Yes, delete it!"
+}).then((result) => {
+  if (result.isConfirmed) {
+    
+
+
+    fetch(`http://localhost:3000/browse-cars/${_id}`, {
+                method: 'DELETE',
+                
+                
+              })
+              .then(res => res.json())
+              .then(data => {
+                console.log(data);
+                Swal.fire({
+      title: "Deleted!",
+      text: "Your car has been deleted.",
+      icon: "success"
+    });
+    navigate('/browse-cars')
+    
+                toast.success('Card Deleted successfully')
+                
+                
+              })
+              .catch(err =>{
+                console.log(err);
+              })
+
+  }
+});
+    }
+
    
   console.log(models);
   return (
@@ -35,7 +81,7 @@ const MyListings = () => {
 <div className='grid space-y-3 max-w-[1400px] mx-auto gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
     {
     models.map(car =>(
-      <div className='flex justify-center my-3'>
+      <div key={car._id} className='flex justify-center my-3'>
       <div  className="card bg-base-100 w-96 shadow-sm text-black">
   <figure>
     <img
@@ -72,8 +118,8 @@ const MyListings = () => {
 
           <div className=" w-full">
       <div className='flex justify-between gap-3'>
-        <button className="btn btn-primary w-1/2">Update</button>
-      <button className="btn btn-primary w-1/2">Delete</button>
+        <Link to={`/listing-update/${car._id}`} className="btn btn-primary w-1/2">Update</Link>
+      <Link onClick={()=>handleDelete(car._id)}   className="btn btn-primary w-1/2">Delete</Link>
       </div>
     </div>
   </div>

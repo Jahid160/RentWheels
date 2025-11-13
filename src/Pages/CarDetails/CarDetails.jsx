@@ -1,68 +1,123 @@
-import React, { use } from 'react';
-import { useLoaderData } from 'react-router';
+import React, { use, useEffect, useState } from 'react';
+import {  useNavigate, useParams } from 'react-router';
 import { AuthContext } from '../../Context/AuthContext';
+import { toast } from 'react-toastify';
 
 const CarDetails = () => {
-
+const navigate = useNavigate();
+const {id,updateUI,setUpdateUI} = useParams()
   const {user} =use(AuthContext)
-  const data = useLoaderData();
+  // const data = useLoaderData();
+  // const [updateUI, setUpdateUI]= useState(false)
+const [data, setData] =useState({})
+const [loading, setLoading] = useState(true);
   
-  const {
-    car_name,
-    category,
-    description,
-    hosted_image_url,
-    location,
-    provider_email,
-    provider_name,
-    rent_price_per_day,
-  } = data;
-  console.log(data);
+useEffect(() => {
+    fetch(`http://localhost:3000/browse-cars/${id}`, {
+     
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        console.log(" Api called!")
+        console.log(data);
+        setLoading(false);
+      });
+  }, [user, id, setUpdateUI]);
+
+  // const {
+  //   car_name,
+  //   category,
+  //   description,
+  //   hosted_image_url,
+  //   location,
+  //   provider_email,
+  //   provider_name,
+  //   rent_price_per_day,
+  // } = data;
+  // console.log(data,data._id);
 
   const handleBook = ()=>{
       
+ const bookNowData = {
+      car_name: data.car_name,
+    category:data.category,
+    description:data.description,
+    hosted_image_url:data.hosted_image_url,
+    location:data.location,
+    provider_email: user?.email,
+    created_at: new Date(),
+    provider_name:data.provider_name,
+    rent_price_per_day:data.rent_price_per_day,
+    };
+    console.log(bookNowData);
 
-      const formData = {
-      car_name,
-    category,
-    description,
-    hosted_image_url,
-    location,
-    provider_email,
-    provider_name,
-    rent_price_per_day,
-    user_name: user?.displayName,
-      user_email: user?.email,
-    }
-    console.log(formData);
+    fetch(`http://localhost:3000/userDB/${data._id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bookNowData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        toast.success("Successfully Book Done!");
+        setUpdateUI(!updateUI)
+
+      
+
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+
+    
+    //   const formData = {
+    //   car_name,
+    // category,
+    // description,
+    // hosted_image_url,
+    // location,
+    // provider_email,
+    // provider_name,
+    // rent_price_per_day,
+    // user_name: user?.displayName,
+    //   user_email: user?.email,
+    // }
+    // console.log(formData);
   
-  }
+  
+
+  
   
   return (
      <div className='flex justify-center my-3'>
       <div  className="card bg-base-100 w-96 shadow-sm text-black">
   <figure>
     <img
-      src={hosted_image_url}
+      src={data?.hosted_image_url}
       alt="Shoes" />
   </figure>
   <div className="card-body">
-    <h2 className="card-title text-2xl font-bold">{car_name}</h2>
-          <p className="text-sm text-black">{description}</p>
+    <h2 className="card-title text-2xl font-bold">{data.car_name}</h2>
+          <p className="text-sm text-black">{data.description}</p>
 
           <div className="mt-3 space-y-1 text-sm">
             <p>
-              <span className="font-semibold">Category:</span> {category}
+              <span className="font-semibold">Category:</span> {data.category}
             </p>
             <p>
-              <span className="font-semibold">Rent Price:</span> ${rent_price_per_day}/day
+              <span className="font-semibold">Rent Price:</span> ${data.rent_price_per_day}/day
             </p>
             <p>
-              <span className="font-semibold">Location:</span> {location}
+              <span className="font-semibold">Location:</span> {data.location}
             </p>
             <p>
               <span className="font-semibold">Status:</span>{" "}
-              <span className="badge badge-success text-white">Available</span>
+              <span className="badge badge-success text-white">{updateUI?'Unavailable':'Available'}</span>
             </p>
           </div>
 
@@ -70,8 +125,8 @@ const CarDetails = () => {
 
           <div className="text-sm ">
             <p className="font-semibold">Provider Info:</p>
-            <p>{provider_name}</p>
-            <p className="text-white/80">{provider_email}</p>
+            <p>{data.provider_name}</p>
+            <p className="text-white/80">{data.provider_email}</p>
           </div>
 
           <div className="card-actions justify-center w-full ">

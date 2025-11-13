@@ -6,7 +6,7 @@ import CarCard from '../CarCard/CarCard';
 const Home = () => {
   const cars = useLoaderData()
   
-  console.log(cars._id);
+  console.log(cars);
   
 
 //  const car = {
@@ -30,7 +30,7 @@ const Home = () => {
   <div className='grid space-y-3 max-w-[1500px] mx-auto  gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
     {
     cars.map(car =>(
-      <CarCard car={car}></CarCard>
+      <CarCard key={car._id} car={car}></CarCard>
     ))
   }
   </div>
