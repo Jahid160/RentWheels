@@ -1,6 +1,7 @@
 import React, { use } from "react";
 import "../../index.css";
 import { AuthContext } from "../../Context/AuthContext";
+import { toast } from "react-toastify";
 
 const AddCar = () => {
   const { user } = use(AuthContext);
@@ -9,14 +10,6 @@ const AddCar = () => {
     e.preventDefault();
     const target = e.target;
 
-// "car_name": "Mercedes-Benz S-Class",
-//     "description": "A top-tier luxury car with unmatched comfort, performance, and design.",
-//     "category": "Luxury",
-//     "rent_price_per_day": 15000,
-//     "location": "Dhaka, Bangladesh",
-//     "hosted_image_url": "https://th.bing.com/th/id/OIP.4qA7_FUxmLy9qAuJnesoFQHaEK?o=7&cb=ucfimgc2rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-//     "provider_name": "Prestige Motors",
-//     "provider_email": "admin@prestigemotors.com"
 
     const formData = {
       car_name: target.car_name.value,
@@ -26,8 +19,10 @@ const AddCar = () => {
       location: target.location.value,
       hosted_image_url: target.hosted_image_url.value,
       provider_name: user?.displayName,
-      provider_email: user?.email
+      provider_email: user?.email,
+      status:target.status.value
     }
+    console.log(formData);
 
     fetch('http://localhost:3000/cars', {
       method: 'POST',
@@ -39,6 +34,8 @@ const AddCar = () => {
     .then(res => res.json())
     .then(data => {
       console.log(data);
+      toast.success('Card added successfully')
+      data.reset()
     })
     .catch(err =>{
       console.log(err);
@@ -131,6 +128,20 @@ const AddCar = () => {
               className="add-from"
             />
           </div>
+          {/* status */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Car Status
+            </label>
+            <input 
+              name="status"
+              value={'available'}
+              type="url"
+              readOnly
+              placeholder="Paste hosted image URL"
+              className="add-from "
+            />
+          </div>
 
           {/* Provider Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -153,6 +164,7 @@ const AddCar = () => {
               value={user?.email}
               readOnly className="add-from" />
             </div>
+            
           </div>
 
           {/* Submit Button */}
