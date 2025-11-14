@@ -12,7 +12,8 @@ import MyListings from "../Pages/MyListings/MyListings";
 import CarDetails from "../Pages/CarDetails/CarDetails";
 import PrivateRoute from "./PrivateRoute";
 import MyListingUpdate from "../Pages/MyListingUpdate/MyListingUpdate";
-import MyListingDelete from "../Pages/MyListingDelete/MyListingDelete";
+// import MyListingDelete from "../Pages/MyListingDelete/MyListingDelete";
+import MyBookingUpdate from "../Pages/MyBookingUpdate/MyBookingUpdate";
 
 export const router = createBrowserRouter([
   {
@@ -63,11 +64,19 @@ export const router = createBrowserRouter([
       //     },
       {
         path: '/my-booking',
+        
         element:(
           <PrivateRoute>
             <MyBookings></MyBookings>
           </PrivateRoute>
         )
+      },
+      {
+      path: '/my-booking/:id',
+      loader: ({params})=> fetch(`http://localhost:3000/my-booking/${params.id}`),
+      element: <PrivateRoute>
+        <MyBookingUpdate></MyBookingUpdate>
+      </PrivateRoute>
       },
       {
         path: '/cars-details/:id',

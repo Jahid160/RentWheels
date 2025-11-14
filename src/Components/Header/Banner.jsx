@@ -14,8 +14,13 @@ import './BannerStyle.css';
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 
 
-const Header = () => {
+const Header = ({cars}) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
+  console.log(cars);
+
+  const bannerSliced = cars.slice(0,3)
+  
   return (
     
       
@@ -34,12 +39,16 @@ const Header = () => {
         modules={[FreeMode, Navigation, Thumbs]}
         className="mySwiper2"
       >
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-1.jpg" />
+        {
+          bannerSliced.map(banner => (
+            <SwiperSlide key={banner._id}>
+          <img src={banner.hosted_image_url
+} />
         </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
-        </SwiperSlide>
+          ))
+        }
+        
+          
         
       </Swiper>
       

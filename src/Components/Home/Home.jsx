@@ -24,8 +24,8 @@ const Home = () => {
 
   return (
   <>
-  <div className='opacity-95 max-w-[1400px]'>
-            <Header></Header>
+  <div className='opacity-95 max-w-[1400px] mb-5'>
+            <Header cars={cars}></Header>
           </div>
   <div className='grid space-y-3 max-w-[1500px] mx-auto  gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
     {

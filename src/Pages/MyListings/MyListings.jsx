@@ -9,7 +9,7 @@ const MyListings = () => {
   const navigate = useNavigate()
   const {user} = use(AuthContext)
     const [models, setModels] = useState([])
-    const [updateUi,setUpdateUi]=useState(false)
+    
     const [loading, setLoading] = useState(true)
 
     useEffect(()=> {

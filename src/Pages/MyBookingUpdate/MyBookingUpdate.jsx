@@ -1,54 +1,59 @@
-
 import React, { use } from 'react';
-import { AuthContext } from '../../Context/AuthContext';
-import { useLoaderData } from 'react-router';
+import { useLoaderData, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthContext';
 
-const MyListingDelete = () => {
+const MyBookingUpdate = () => {
+  const navigate = useNavigate()
+
   const data = useLoaderData()
   console.log(data);
 
   const {user} = use(AuthContext)
   const handleSubmit = (e)=>{
-      e.preventDefault();
-      const target = e.target;
-  
-  
-      const formData = {
-        car_name: target.car_name.value,
-        description: target.description.value,
-        category:target.category.value,
-        rent_price_per_day: target.rent_price_per_day.value,
-        location: target.location.value,
-        hosted_image_url: target.hosted_image_url.value,
-        provider_name: user?.displayName,
-        provider_email: user?.email,
-        status:target.status.value
-      }
-      console.log(formData);
-  
-      fetch(`http://localhost:3000/browse-cars/${data._id}`, {
-            method: 'DELETE',
-            
-            body: JSON.stringify(formData)
-          })
-          .then(res => res.json())
-          .then(data => {
-            console.log(data);
-            toast.success('Card Deleted successfully')
-            data.reset()
-            
-          })
-          .catch(err =>{
-            console.log(err);
-          })
-  
+    e.preventDefault();
+    const target = e.target;
+
+
+    const formData = {
+      car_name: target.car_name.value,
+      description: target.description.value,
+      category:target.category.value,
+      rent_price_per_day: target.rent_price_per_day.value,
+      location: target.location.value,
+      hosted_image_url: target.hosted_image_url.value,
+      provider_name: user?.displayName,
+      provider_email: user?.email,
+      status:target.status.value
     }
+    console.log(formData);
+
+    fetch(`http://localhost:3000/my-booking/${data._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': "application/json"
+          },
+          body: JSON.stringify(formData)
+        })
+        .then(res => res.json())
+        .then(data => {
+          navigate('/my-booking')
+          console.log(data);
+          toast.success('Booking car Updated successfully')
+          data.reset()
+          
+          
+        })
+        .catch(err =>{
+          console.log(err);
+        })
+
+  }
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-indigo-100 flex items-center justify-center py-10 px-4">
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-8">
         <h2 className="text-3xl font-bold text-center text-blue-700 mb-8">
-          Delete Car
+          Update Booking Car
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -124,7 +129,7 @@ const MyListingDelete = () => {
             />
           </div>
 
-          {/* Hosted Image URL */}
+          {/* hosted_image_url */}
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
               Hosted Image URL
@@ -132,8 +137,9 @@ const MyListingDelete = () => {
             <input
             name="hosted_image_url"
             defaultValue={data.hosted_image_url}
+            readOnly
               type="url"
-              placeholder="Paste hosted image URL"
+              placeholder="Booking Car hosted_image_url"
               className="add-from"
             />
           </div>
@@ -145,9 +151,10 @@ const MyListingDelete = () => {
             <input 
               name="status"
               defaultValue={data.status}
-              type="url"
               readOnly
-              placeholder="Paste hosted image URL"
+              type="url"
+              
+              placeholder="Car Status"
               className="add-from "
             />
           </div>
@@ -182,7 +189,7 @@ const MyListingDelete = () => {
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
             >
-              Delete Car
+              Booking Update
             </button>
           </div>
         </form>
@@ -191,4 +198,4 @@ const MyListingDelete = () => {
   );
 };
 
-export default MyListingDelete;
+export default MyBookingUpdate;
