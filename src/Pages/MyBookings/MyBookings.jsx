@@ -1,18 +1,89 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router';
+import React, { use, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthContext';
+import Swal from 'sweetalert2';
 
 
 const MyBookings = () => {
+const navigate = useNavigate()
+  const {user} = use(AuthContext)
+    
+    
+    const [loading, setLoading] = useState(true)
+
   const [dates, setDates]= useState([])
 
-  useEffect(()=>{
-    fetch('http://localhost:3000/my-booking')
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      setDates(data)
-    })
-  },[])
+  // useEffect(()=>{
+  //   fetch('http://localhost:3000/my-booking')
+  //   .then(res => res.json())
+  //   .then(data => {
+  //     console.log(data);
+  //     setDates(data)
+  //   })
+  // },[])
+
+  useEffect(()=> {
+  
+          fetch(`http://localhost:3000/my-booking?email=${user.email}`, {
+              headers: {
+                  authorization: `Bearer ${user.accessToken}`
+              }
+          })
+          .then(res=> res.json())
+          .then(data=> {
+              
+              setDates(data)
+              setLoading(false)
+          })
+  
+      }, [user])
+
+if(loading) {
+        return <div> Please wait ... Loading...</div>
+    }
+
+  const handleDelete = (_id) =>{
+      Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      
+  
+  
+      fetch(`http://localhost:3000/my-booking/${_id}`, {
+                  method: 'DELETE',
+                  
+                  
+                })
+                .then(res => res.json())
+                .then(data => {
+                  setDates(prev => prev.filter(item => item._id !== _id));
+                  console.log(data);
+                  Swal.fire({
+        title: "Deleted!",
+        text: "Your car has been deleted.",
+        icon: "success"
+      });
+      navigate('/my-booking')
+      
+                  toast.success('Booking Card Deleted successfully')
+                })
+                .catch(err =>{
+                  console.log(err);
+                })
+  
+    }
+  });
+      }
+
+
   return (
     <div>
       {
@@ -59,9 +130,8 @@ const MyBookings = () => {
           <br />
           <span className="badge badge-ghost badge-sm">{data.car_name}</span>
         </td>
-        <td>{data.category}</td>
-        <td className='text-xl text-green-800'>${data.
-rent_price_per_day}</td>
+        <td className='text-black font-bold'>${data.rent_price_per_day}</td>
+        <button onClick={()=>handleDelete(data._id)} className='btn mt-8'>Delete</button>
         <th>
           <Link to={`/my-booking/${data._id}`} className="btn btn-ghost ">details</Link>
         </th>

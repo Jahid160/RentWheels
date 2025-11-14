@@ -1,11 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { AuthContext } from "../../Context/AuthContext";
 import { FaGoogle } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
 
 const Register = () => {
   const { createUser, updateUserProfile, setUser,signInWithGoogle } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+    return regex.test(password);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,29 +23,44 @@ const Register = () => {
       photoURL: target.photoURL.value,
       password: target.password.value,
     };
+     if (!validatePassword(values.password)) {
+      setError(
+        "Password must be at least 6 characters long and contain both uppercase and lowercase letters."
+      );
+      return;
+    }
 
     createUser(values.email, values.password)
       .then((result) => {
         updateUserProfile(values.displayName, values.photoURL);
+        toast.success('register success')
         setUser(result.user);
         navigate("/");
         console.log(result.user);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        toast.error(error.message)
+        setError(error.message)
+      }
+    
+    );
   };
 
   const handleGoogleSignIn = () => {
     
     signInWithGoogle()
       .then((result) => {
+        toast.success('register success')
         setUser(result.user)
+        
         console.log(result.user.photoURL);
         navigate("/");
       })
       .catch((error) => {
-        console.log(error);
-        
+        toast.error(error.message)
+        setError(error.message);
       });
+      // toast.success('success')
   };
 
   return (
@@ -51,6 +73,8 @@ const Register = () => {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
       <div className="bg-gradient-to-r from-[#2e1065]/90 to-[#3b82f6]/90 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-[90%] max-w-md text-white">
         <h2 className="text-4xl font-bold text-center mb-6">Register</h2>
+
+        
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -92,6 +116,11 @@ const Register = () => {
               className="w-full px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none placeholder-gray-200 text-white"
             />
           </div>
+          {error && (
+          <p className=" text-red-600 p-2 rounded mb-4 text-center font-semibold">
+            {error}
+          </p>
+        )}
 
           <button
             type="submit"
@@ -118,6 +147,7 @@ const Register = () => {
           </Link>
         </div>
       </div>
+      <ToastContainer></ToastContainer>
     </div>
   );
 };

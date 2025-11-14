@@ -16,7 +16,7 @@ const HomeLayout = () => {
       <div className="max-w-[1400px] mx-auto">
         <Navbar />
         
-        <div className="">
+        <div className="my-auto">
           <Outlet />
         </div>
         <Footer/>

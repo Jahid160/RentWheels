@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { useLoaderData } from 'react-router';
 import Header from '../Header/Banner';
 import CarCard from '../CarCard/CarCard';
+import RentWithUs from '../RentWithUs/RentWithUs';
+import Testimonial from '../Testimonial/Testimonial';
 
 const Home = () => {
   const cars = useLoaderData()
   
   console.log(cars);
+  const rentUs = cars.slice(0,4)
   
-
+console.log(rentUs);
 //  const car = {
 //     car_name: "Range Rover Evoque",
 //     description:
@@ -34,6 +37,10 @@ const Home = () => {
     ))
   }
   </div>
+  <div>
+  <RentWithUs rentUs={rentUs}></RentWithUs>
+  </div>
+  <div><Testimonial></Testimonial></div>
   </>  
   );
 };
