@@ -7,7 +7,7 @@ const ErrorPage = () => {
   return (
     <div className=' text-center items-center text-black'>
       <h1>ErrorPage</h1>
-      <Link to={'/'}>Back Home</Link>
+      <Link className='btn' to={'/'}>Back Home</Link>
     </div>
   );
 };
