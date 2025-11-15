@@ -53,7 +53,7 @@ const Register = () => {
         toast.success('register success')
         setUser(result.user)
         
-        console.log(result.user.photoURL);
+        // console.log(result.user.photoURL);
         navigate("/");
       })
       .catch((error) => {
