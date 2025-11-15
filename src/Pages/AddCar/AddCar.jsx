@@ -20,7 +20,8 @@ const AddCar = () => {
       hosted_image_url: target.hosted_image_url.value,
       provider_name: user?.displayName,
       provider_email: user?.email,
-      status:target.status.value
+      status:target.status.value,
+      created_at: new Date().toISOString()
     }
     console.log(formData);
 
@@ -33,7 +34,7 @@ const AddCar = () => {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
+      // console.log(data);
       toast.success('Card added successfully')
       data.reset()
     })

@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router';
+import UseTime from '../Loading/Loading';
 
 const CarCard = ({car}) => {
+  // const [loading,setLoading]= useState(true)
+
+  // if(!car){
+  //   <UseTime></UseTime>
+  // }
   return (
+
     <div key={car._id} className="max-w-sm bg-white shadow-lg rounded-2xl overflow-hidden border hover:shadow-2xl transition-all duration-300 mx-auto">
       <img
         src={car.hosted_image_url}
@@ -11,7 +18,7 @@ const CarCard = ({car}) => {
       />
       <div className="p-5">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">{car.car_name}</h2>
-        {/* <p className="text-gray-600 text-sm mb-4">{car.description}</p> */}
+        <p className="text-gray-600  text-sm mb-4">{car.status == 'unavailable'?<span className='badge badge-error text-gray'>{car.status}</span>:<span className='badge badge-success text-gray'>{car.status}</span>}</p>
 
         <div className="flex justify-between text-sm text-gray-500 mb-3">
           <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full font-medium">

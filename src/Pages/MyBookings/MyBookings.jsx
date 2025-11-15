@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthContext';
 import Swal from 'sweetalert2';
+import UseTime from '../../Components/Loading/Loading';
 
 
 const MyBookings = () => {
@@ -40,7 +41,7 @@ const navigate = useNavigate()
       }, [user])
 
 if(loading) {
-        return <div> Please wait ... Loading...</div>
+        return <UseTime></UseTime>
     }
 
   const handleDelete = (_id) =>{
@@ -65,7 +66,7 @@ if(loading) {
                 .then(res => res.json())
                 .then(data => {
                   setDates(prev => prev.filter(item => item._id !== _id));
-                  console.log(data);
+                  // console.log(data);
                   Swal.fire({
         title: "Deleted!",
         text: "Your car has been deleted.",

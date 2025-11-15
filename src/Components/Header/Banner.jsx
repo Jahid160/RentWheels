@@ -17,7 +17,7 @@ import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 const Header = ({cars}) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
-  console.log(cars);
+  // console.log(cars);
 
   const bannerSliced = cars.slice(0,3)
   

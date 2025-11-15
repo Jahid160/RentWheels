@@ -8,7 +8,7 @@ const MyListingUpdate = () => {
   const navigate = useNavigate()
 
   const data = useLoaderData()
-  console.log(data);
+  // console.log(data);
 
   const {user} = use(AuthContext)
   const handleSubmit = (e)=>{
@@ -27,7 +27,7 @@ const MyListingUpdate = () => {
       provider_email: user?.email,
       status:target.status.value
     }
-    console.log(formData);
+    // console.log(formData);
 
     fetch(`http://localhost:3000/browse-cars/${data._id}`, {
           method: 'PUT',
@@ -39,7 +39,7 @@ const MyListingUpdate = () => {
         .then(res => res.json())
         .then(data => {
           navigate('/my-listing')
-          console.log(data);
+          // console.log(data);
           toast.success('Card Updated successfully')
           data.reset()
           

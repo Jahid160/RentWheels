@@ -36,7 +36,7 @@ const Register = () => {
         toast.success('register success')
         setUser(result.user);
         navigate("/");
-        console.log(result.user);
+        // console.log(result.user);
       })
       .catch((error) => {
         toast.error(error.message)
@@ -53,7 +53,7 @@ const Register = () => {
         toast.success('register success')
         setUser(result.user)
         
-        console.log(result.user.photoURL);
+        // console.log(result.user.photoURL);
         navigate("/");
       })
       .catch((error) => {
@@ -70,7 +70,7 @@ const Register = () => {
       bg-cover bg-center"
     >
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+      <div className="absolute inset-0 bg-black/50 "></div>
       <div className="bg-gradient-to-r from-[#2e1065]/90 to-[#3b82f6]/90 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-[90%] max-w-md text-white">
         <h2 className="text-4xl font-bold text-center mb-6">Register</h2>
 

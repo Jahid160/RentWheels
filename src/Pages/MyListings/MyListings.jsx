@@ -4,6 +4,7 @@ import CarCard from '../../Components/CarCard/CarCard';
 import { Link, useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import UseTime from '../../Components/Loading/Loading';
 
 const MyListings = () => {
   const navigate = useNavigate()
@@ -30,7 +31,7 @@ const MyListings = () => {
 
 
     if(loading) {
-        return <div> Please wait ... Loading...</div>
+        return <UseTime></UseTime>
     }
 
     const handleDelete = (_id) =>{
@@ -75,7 +76,7 @@ const MyListings = () => {
     }
 
    
-  console.log(models);
+  // console.log(models);
   return (
     
 <div className='grid space-y-3 max-w-[1400px] mx-auto gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>

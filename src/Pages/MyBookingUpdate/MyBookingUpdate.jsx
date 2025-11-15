@@ -7,7 +7,7 @@ const MyBookingUpdate = () => {
   const navigate = useNavigate()
 
   const data = useLoaderData()
-  console.log(data);
+  // console.log(data);
 
   const {user} = use(AuthContext)
   const handleSubmit = (e)=>{
@@ -26,7 +26,7 @@ const MyBookingUpdate = () => {
       provider_email: user?.email,
       status:target.status.value
     }
-    console.log(formData);
+    // console.log(formData);
 
     fetch(`http://localhost:3000/my-booking/${data._id}`, {
           method: 'PUT',
@@ -38,7 +38,7 @@ const MyBookingUpdate = () => {
         .then(res => res.json())
         .then(data => {
           navigate('/my-booking')
-          console.log(data);
+          // console.log(data);
           toast.success('Booking car Updated successfully')
           data.reset()
           

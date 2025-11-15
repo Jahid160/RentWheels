@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import HomeLayout from "../Layout/HomeLayout";
-import { Children } from "react";
+import { Children, Suspense } from "react";
 import Home from "../Components/Home/Home";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
@@ -14,21 +14,28 @@ import PrivateRoute from "./PrivateRoute";
 import MyListingUpdate from "../Pages/MyListingUpdate/MyListingUpdate";
 // import MyListingDelete from "../Pages/MyListingDelete/MyListingDelete";
 import MyBookingUpdate from "../Pages/MyBookingUpdate/MyBookingUpdate";
+import UseTime from "../Components/Loading/Loading";
+import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <HomeLayout></HomeLayout>,
+    errorElement:<ErrorPage></ErrorPage>,
     children: [
       {
         index: true,
         loader: ()=> fetch(`http://localhost:3000/cars`),
-        Component: Home
+        element: <Suspense fallback={<UseTime></UseTime>}>
+          <Home></Home>
+        </Suspense>
       },
       {
         path: '/browse-cars',
         loader: ()=> fetch(`http://localhost:3000/browse-cars`),
-        element: <BrowseCar></BrowseCar>
+        element: <Suspense fallback={<UseTime></UseTime>}>
+          <BrowseCar></BrowseCar>
+        </Suspense>
       },
       {
         path: '/add-car',
@@ -52,16 +59,12 @@ export const router = createBrowserRouter([
             path:'/listing-update/:id',
             loader: ({params})=> fetch(`http://localhost:3000/browse-cars/${params.id}`),
             element: <PrivateRoute>
-              <MyListingUpdate></MyListingUpdate>
+              <Suspense fallback={<UseTime></UseTime>}>
+                <MyListingUpdate></MyListingUpdate>
+              </Suspense>
             </PrivateRoute>
           },
-      // {
-      //       path:'/listing-delete/:id',
-      //       loader: ({params})=> fetch(`http://localhost:3000/browse-cars/${params.id}`),
-      //       element: <PrivateRoute>
-      //         <MyListingDelete></MyListingDelete>
-      //       </PrivateRoute>
-      //     },
+      
       {
         path: '/my-booking',
         
@@ -75,18 +78,17 @@ export const router = createBrowserRouter([
       path: '/my-booking/:id',
       loader: ({params})=> fetch(`http://localhost:3000/my-booking/${params.id}`),
       element: <PrivateRoute>
-        <MyBookingUpdate></MyBookingUpdate>
+        <Suspense fallback={<UseTime></UseTime>}>
+          <MyBookingUpdate></MyBookingUpdate>
+        </Suspense>
       </PrivateRoute>
       },
       {
         path: '/cars-details/:id',
         // loader: ({params}) => fetch(`http://localhost:3000/browse-cars/${params.id}`),
         element: <CarDetails></CarDetails>
-      }
-      
-    ]
-  },
-  {
+      },
+      {
     path: '/login',
     element: <Login></Login>
   },
@@ -94,5 +96,9 @@ export const router = createBrowserRouter([
     path: '/register',
     element: <Register></Register>
   },
+      
+    ]
+  },
+  
   
 ])
