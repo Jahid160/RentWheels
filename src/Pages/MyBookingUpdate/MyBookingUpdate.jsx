@@ -28,7 +28,7 @@ const MyBookingUpdate = () => {
     }
     // console.log(formData);
 
-    fetch(`http://localhost:3000/my-booking/${data._id}`, {
+    fetch(`https://car-rental-server-cyan-ten.vercel.app/my-booking/${data._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': "application/json"

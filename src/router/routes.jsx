@@ -16,89 +16,134 @@ import MyListingUpdate from "../Pages/MyListingUpdate/MyListingUpdate";
 import MyBookingUpdate from "../Pages/MyBookingUpdate/MyBookingUpdate";
 import UseTime from "../Components/Loading/Loading";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import DashboardLayout from "../Layout/DashboardLayout";
+
+import AuthLayout from "../Layout/AuthLayout";
+import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
+import DashboardProfile from "../Pages/Dashboard/DashboardProfile/DashboardProfile";
+
+import AdminManegeUser from "../Pages/Dashboard/AdminManegeUser/AdminManegeUser";
+import AdminRoute from "./AdminRoute";
+import ManageUsers from "../Pages/Dashboard/AdminManegeUser/AdminManegeUser";
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <HomeLayout></HomeLayout>,
-    errorElement:<ErrorPage></ErrorPage>,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         index: true,
-        loader: ()=> fetch(`http://localhost:3000/cars`),
-        element: <Suspense fallback={<UseTime></UseTime>}>
-          <Home></Home>
-        </Suspense>
+        // loader: ()=> fetch(`https://car-rental-server-cyan-ten.vercel.app/cars`),
+        // element: <Suspense fallback={<UseTime></UseTime>}>
+        //   <Home></Home>
+        // </Suspense>
+        element: <Home></Home>,
       },
       {
-        path: '/browse-cars',
-        loader: ()=> fetch(`http://localhost:3000/browse-cars`),
-        element: <Suspense fallback={<UseTime></UseTime>}>
-          <BrowseCar></BrowseCar>
-        </Suspense>
+        path: "/browse-cars",
+        loader: () => fetch(`https://car-rental-server-cyan-ten.vercel.app/browse-cars`),
+        element: (
+          <Suspense fallback={<UseTime></UseTime>}>
+            <BrowseCar></BrowseCar>
+          </Suspense>
+        ),
       },
       {
-        path: '/add-car',
-        element:(
+        path: "/add-car",
+        element: (
           <PrivateRoute>
             <AddCar></AddCar>
           </PrivateRoute>
-        )
-        
+        ),
       },
       {
-        path: '/my-listing',
-        element:(
+        path: "/my-listing",
+        element: (
           <PrivateRoute>
             <MyListings></MyListings>
           </PrivateRoute>
         ),
-        
       },
       {
-            path:'/listing-update/:id',
-            loader: ({params})=> fetch(`http://localhost:3000/browse-cars/${params.id}`),
-            element: <PrivateRoute>
-              <Suspense fallback={<UseTime></UseTime>}>
-                <MyListingUpdate></MyListingUpdate>
-              </Suspense>
-            </PrivateRoute>
-          },
-      
+        path: "/listing-update/:id",
+        loader: ({ params }) =>
+          fetch(`https://car-rental-server-cyan-ten.vercel.app/browse-cars/${params.id}`),
+        element: (
+          <PrivateRoute>
+            <Suspense fallback={<UseTime></UseTime>}>
+              <MyListingUpdate></MyListingUpdate>
+            </Suspense>
+          </PrivateRoute>
+        ),
+      },
+
       {
-        path: '/my-booking',
-        
-        element:(
+        path: "/my-booking",
+
+        element: (
           <PrivateRoute>
             <MyBookings></MyBookings>
           </PrivateRoute>
-        )
+        ),
       },
       {
-      path: '/my-booking/:id',
-      loader: ({params})=> fetch(`http://localhost:3000/my-booking/${params.id}`),
-      element: <PrivateRoute>
-        <Suspense fallback={<UseTime></UseTime>}>
-          <MyBookingUpdate></MyBookingUpdate>
-        </Suspense>
-      </PrivateRoute>
+        path: "/my-booking/:id",
+        loader: ({ params }) =>
+          fetch(`https://car-rental-server-cyan-ten.vercel.app/my-booking/${params.id}`),
+        element: (
+          <PrivateRoute>
+            <Suspense fallback={<UseTime></UseTime>}>
+              <MyBookingUpdate></MyBookingUpdate>
+            </Suspense>
+          </PrivateRoute>
+        ),
       },
       {
-        path: '/cars-details/:id',
-        // loader: ({params}) => fetch(`http://localhost:3000/browse-cars/${params.id}`),
-        element: <CarDetails></CarDetails>
+        path: "/cars-details/:id",
+        // loader: ({params}) => fetch(`https://car-rental-server-cyan-ten.vercel.app/browse-cars/${params.id}`),
+        element: <CarDetails></CarDetails>,
       },
-      {
-    path: '/login',
-    element: <Login></Login>
+    ],
   },
   {
-    path: '/register',
-    element: <Register></Register>
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/login",
+        element: <Login></Login>,
+      },
+      {
+        path: "/register",
+        element: <Register></Register>,
+      },
+    ],
   },
-      
-    ]
+  {
+    path: "dashboard",
+    element: <DashboardLayout></DashboardLayout>,
+    children: [
+      {
+        index: true,
+        element: <PrivateRoute>
+          <DashboardHome></DashboardHome>
+        </PrivateRoute>,
+      },
+      {
+        path: 'profile/:email',
+        element: <PrivateRoute>
+          <DashboardProfile></DashboardProfile>
+        </PrivateRoute>
+      },
+      {
+        path: 'admin/manage-users',
+        element: 
+          <AdminRoute>
+          <ManageUsers></ManageUsers>
+          </AdminRoute>
+        
+      }
+    ],
   },
-  
-  
-])
+]);

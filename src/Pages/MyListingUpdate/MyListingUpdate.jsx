@@ -29,7 +29,7 @@ const MyListingUpdate = () => {
     }
     // console.log(formData);
 
-    fetch(`http://localhost:3000/browse-cars/${data._id}`, {
+    fetch(`https://car-rental-server-cyan-ten.vercel.app/browse-cars/${data._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': "application/json"

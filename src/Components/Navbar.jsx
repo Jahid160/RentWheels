@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { Link, NavLink } from "react-router";
 import { AuthContext } from "../Context/AuthContext";
-import logoImg from '.././assets/logoImg.png'
+import logoImg from ".././assets/logoImg.png";
 import { IoMenu } from "react-icons/io5";
 
-const Navbar = () => {
+const Navbar = ({scrollToContact}) => {
   const { user, setUser, signOutUser } = useContext(AuthContext);
 
   const handleLogOut = () => {
@@ -17,11 +17,42 @@ const Navbar = () => {
 
   const navLinks = (
     <>
-      <li><NavLink to="/" className="font-medium">Home</NavLink></li>
-      <li><NavLink to="/add-car" className="font-medium">Add Car</NavLink></li>
-      <li><NavLink to="/my-listing" className="font-medium">My Listings</NavLink></li>
-      <li><NavLink to="/my-booking" className="font-medium">My Bookings</NavLink></li>
-      <li><NavLink to="/browse-cars" className="font-medium">Browse Cars</NavLink></li>
+      <li>
+        <NavLink to="/" className="font-medium">
+          Home
+        </NavLink>
+      </li>
+      {user && (
+        <>
+          <li>
+            <NavLink to="/add-car" className="font-medium">
+              Add Car
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/my-listing" className="font-medium">
+              My Listings
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/my-booking" className="font-medium">
+              My Bookings
+            </NavLink>
+          </li>
+        </>
+      )}
+
+        <li>
+        <Link onClick={scrollToContact} className="font-medium">
+          Contact Us
+        </Link>
+      </li>
+      <li>
+        <NavLink to="/browse-cars" className="font-medium">
+          All Cars
+        </NavLink>
+      </li>
+    
     </>
   );
 
@@ -53,7 +84,7 @@ const Navbar = () => {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg> */}
-            <IoMenu className="text-black" size={25}/>
+            <IoMenu className="text-black" size={25} />
           </div>
           <ul
             tabIndex={0}
@@ -71,12 +102,13 @@ const Navbar = () => {
             </Link>
           ) : (
             <>
-              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
                 <div className="w-10 rounded-full border-2 border-primary">
-                  <img
-                    src={user?.photoURL}
-                    alt="user"
-                  />
+                  <img src={user?.photoURL} alt="user" />
                 </div>
               </div>
               <ul
@@ -85,10 +117,17 @@ const Navbar = () => {
               >
                 <li className="p-2 border-b">
                   <p className="font-semibold">{user.displayName}</p>
+
                   <p className="text-sm text-gray-500">{user.email}</p>
+                  <p className="font-semibold">
+                    <Link to={"/dashboard"}>Dashboard</Link>
+                  </p>
                 </li>
                 <li>
-                  <button onClick={handleLogOut} className="text-error font-medium">
+                  <button
+                    onClick={handleLogOut}
+                    className="text-error font-medium"
+                  >
                     Log Out
                   </button>
                 </li>

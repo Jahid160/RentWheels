@@ -1,60 +1,57 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 // Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/free-mode';
-import 'swiper/css/navigation';
-import 'swiper/css/thumbs';
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
-import './BannerStyle.css';
+import "./BannerStyle.css";
 
 // import required modules
-import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
+const Header = ({ cars }) => {
+  const progressCircle = useRef(null);
+  const progressContent = useRef(null);
+  const onAutoplayTimeLeft = (s, time, progress) => {
+    progressCircle.current.style.setProperty("--progress", 1 - progress);
+    progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
+  };
 
-const Header = ({cars}) => {
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const bannerSliced = cars.slice(0, 3);
 
-  // console.log(cars);
-
-  const bannerSliced = cars.slice(0,3)
-  
   return (
-    
-      
-
-
-  <>
+    <>
       <Swiper
-        style={{
-          '--swiper-navigation-color': '#fff',
-          '--swiper-pagination-color': '#fff',
+        spaceBetween={30}
+        centeredSlides={true}
+        autoplay={{
+          delay: 3500,
+          disableOnInteraction: false,
         }}
-        loop={true}
-        spaceBetween={10}
+        pagination={{
+          clickable: true,
+        }}
         navigation={true}
-        thumbs={{ swiper: thumbsSwiper }}
-        modules={[FreeMode, Navigation, Thumbs]}
-        className="mySwiper2"
+        modules={[Autoplay, Pagination, Navigation]}
+        onAutoplayTimeLeft={onAutoplayTimeLeft}
+        className="mySwiper"
       >
-        {
-          bannerSliced.map(banner => (
-            <SwiperSlide key={banner._id}>
-          <img src={banner.hosted_image_url
-} />
-        </SwiperSlide>
-          ))
-        }
-        
-          
-        
+        {bannerSliced.map((banner) => (
+          <SwiperSlide key={banner._id}>
+            <img src={banner.hosted_image_url} />
+          </SwiperSlide>
+        ))}
+        <div className="autoplay-progress" slot="container-end">
+          <svg viewBox="0 0 48 48" ref={progressCircle}>
+            <circle cx="24" cy="24" r="20"></circle>
+          </svg>
+          <span ref={progressContent}></span>
+        </div>
       </Swiper>
-      
     </>
-
-   
   );
 };
 

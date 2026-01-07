@@ -25,7 +25,7 @@ const AddCar = () => {
     }
     console.log(formData);
 
-    fetch('http://localhost:3000/cars', {
+    fetch('https://car-rental-server-cyan-ten.vercel.app/cars', {
       method: 'POST',
       headers: {
         'Content-Type': "application/json"

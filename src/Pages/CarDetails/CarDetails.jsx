@@ -1,148 +1,128 @@
-import React, { use, useEffect, useState } from 'react';
-import {  useNavigate, useParams } from 'react-router';
-import { AuthContext } from '../../Context/AuthContext';
-import { toast } from 'react-toastify';
-import UseTime from '../../Components/Loading/Loading';
+import React, { use } from "react";
+import { useNavigate, useParams } from "react-router";
+
+import { toast } from "react-toastify";
+import UseTime from "../../Components/Loading/Loading";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useAuth from "../../hooks/useAuth";
+
 
 const CarDetails = () => {
-const navigate = useNavigate();
-const {id} = useParams()
-  const {user} =use(AuthContext)
-  // const data = useLoaderData();
-  const [updateUI, setUpdateUI]= useState(false)
-const [data, setData] =useState({})
-const [loading, setLoading] = useState(true);
-  
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth()
+  const queryClient = useQueryClient();
+  const axiosSecure = useAxiosSecure()
 
+  // =========================
+  // 1️⃣ GET Car Details
+  // =========================
+  const { data, isLoading } = useQuery({
+    queryKey: ["car-details", id],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/browse-cars/${id}`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
 
-useEffect(() => {
-    fetch(`http://localhost:3000/browse-cars/${id}`, {
-     
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        // console.log(" Api called!")
-        // console.log(data);
-        setLoading(false);
-      });
-  }, [user, id, setUpdateUI]);
+  // =========================
+  // 2️⃣ POST Booking
+  // =========================
+  const bookCarMutation = useMutation({
+    mutationFn: async (bookingData) => {
+      return axiosSecure.post(`/userCar/${data._id}`, bookingData);
+    },
+  });
 
-  // const {
-  //   car_name,
-  //   category,
-  //   description,
-  //   hosted_image_url,
-  //   location,
-  //   provider_email,
-  //   provider_name,
-  //   rent_price_per_day,
-  // } = data;
-  // console.log(data,data._id);
+  // =========================
+  // 3️⃣ PATCH Car Status
+  // =========================
+  const updateStatusMutation = useMutation({
+    mutationFn: async () => {
+      return axiosSecure.patch(
+        `/browse-cars/status/${data._id}`,
+        { status: "unavailable" }
+      );
+    },
+    onSuccess: () => {
+      toast.success("Car booked successfully!");
+      queryClient.invalidateQueries(["car-details", id]);
+    },
+  });
 
-  const handleBook = () => {
-  const bookNowData = {
-    car_name: data.car_name,
-    category: data.category,
-    description: data.description,
-    hosted_image_url: data.hosted_image_url,
-    location: data.location,
-    provider_email: user?.email,
-    created_at: new Date(),
-    provider_name: data.provider_name,
-    rent_price_per_day: data.rent_price_per_day,
+  // =========================
+  // 4️⃣ Handle Booking
+  // =========================
+  const handleBook = async () => {
+    if (!user) return navigate("/");
+
+    const bookingData = {
+      car_name: data.car_name,
+      category: data.category,
+      description: data.description,
+      hosted_image_url: data.hosted_image_url,
+      location: data.location,
+      provider_email: user.email,
+      created_at: new Date(),
+      provider_name: data.provider_name,
+      rent_price_per_day: data.rent_price_per_day,
+    };
+
+    try {
+      await bookCarMutation.mutateAsync(bookingData);
+      await updateStatusMutation.mutateAsync();
+    } catch (err) {
+      toast.error("Booking failed!");
+    }
   };
 
-  // 1️⃣ POST booking
-  fetch(`http://localhost:3000/userDB/${data._id}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(bookNowData),
-  })
-    .then((res) => res.json())
-    .then(() => {
-      // 2️⃣ PATCH status update
-      return fetch(`http://localhost:3000/browse-cars/status/${data._id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "unavailable" }),
-      });
-    })
-    .then((res) => res.json())
-    .then(() => {
-      toast.success("Car booked and status updated!");
+  // =========================
+  // UI States
+  // =========================
+  if (isLoading) return <UseTime />;
 
-      // Update UI
-      setData((prev) => ({ ...prev, status: "unavailable" }));
-      setUpdateUI(!updateUI);
-    })
-    .catch((err) => console.error(err));
-};
-
-
-
-    if(loading){
-  return <UseTime></UseTime>
-}
-    //   const formData = {
-    //   car_name,
-    // category,
-    // description,
-    // hosted_image_url,
-    // location,
-    // provider_email,
-    // provider_name,
-    // rent_price_per_day,
-    // user_name: user?.displayName,
-    //   user_email: user?.email,
-    // }
-    // console.log(formData);
-  
-  
-
-  
-  
   return (
-     <div className='flex justify-center my-3'>
-      <div  className="card bg-base-100 w-96 shadow-sm text-black">
-  <figure>
-    <img
-      src={data?.hosted_image_url}
-      alt="Shoes" />
-  </figure>
-  <div className="card-body">
-    <h2 className="card-title text-2xl font-bold">{data.car_name}</h2>
-          <p className="text-sm text-black">{data.description}</p>
+    <div className="flex justify-center my-3 text-black">
+      <div className="card bg-base-100 w-96 shadow-sm">
+        <figure>
+          <img src={data.hosted_image_url} alt="car" />
+        </figure>
 
-          <div className="mt-3 space-y-1 text-sm">
-            <p>
-              <span className="font-semibold">Category:</span> {data.category}
-            </p>
-            <p>
-              <span className="font-semibold">Rent Price:</span> ${data.rent_price_per_day}/day
-            </p>
-            <p>
-              <span className="font-semibold">Location:</span> {data.location}
-            </p>
-            <p className="text-gray-600  text-sm mb-4">{data.status == 'unavailable'?<span className='badge badge-error text-gray'>{data.status}</span>:<span className='badge badge-success text-gray'>{data.status}</span>}</p>
+        <div className="card-body">
+          <h2 className="card-title">{data.car_name}</h2>
+          <p>{data.description}</p>
+
+          <p>Category: {data.category}</p>
+          <p>Rent: ${data.rent_price_per_day}/day</p>
+          <p>Location: {data.location}</p>
+
+          <p>
+            Status:{" "}
+            <span className={`badge ${data.status === "unavailable" ? "badge-error" : "badge-success"}`}>
+              {data.status}
+            </span>
+          </p>
+
+          <div className="card-actions">
+            {data.status === "unavailable" ? (
+              <button disabled className="btn btn-primary w-full">
+                Already Booked
+              </button>
+            ) : (
+              <button
+                onClick={handleBook}
+                className="btn btn-primary w-full"
+                disabled={bookCarMutation.isLoading || updateStatusMutation.isLoading}
+              >
+                Booking...
+              </button>
+            )}
           </div>
-
-          <div className="divider my-2 opacity-50"></div>
-
-          <div className="text-sm ">
-            <p className="font-semibold">Provider Info:</p>
-            <p>{data.provider_name}</p>
-            <p className="text-white/80">{data.provider_email}</p>
-          </div>
-
-          <div className="card-actions justify-center w-full ">
-      {
-        data.status == "unavailable"?<button disabled className="btn btn-primary w-full disabled:bg-gray-400 disabled:cursor-not-allowed">Book Now</button>:<button onClick={handleBook} className="btn btn-primary w-full">Book Now</button>
-      }
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-     </div>
   );
 };
 

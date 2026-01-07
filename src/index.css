@@ -2,7 +2,7 @@
 @plugin "daisyui";
 
 li{
-  background-color: greenyellow;
+  background-color: rgb(141, 147, 230);
   padding: 5px;
   gap: 10px;
   
@@ -13,7 +13,8 @@ li{
 }
 
 .active{
-  background-color: rgb(235, 7, 83);
+  
   /* color: gray; */
+  color: black;
   text-decoration: underline;
 }

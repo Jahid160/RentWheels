@@ -13,7 +13,7 @@ icon: <FaHeadset size={35} />
   }];
   
   return (
-    <div className="py-16 ">
+    <div className="py-5 ">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-4xl font-bold mb-10">Why Rent With Us</h2>
 
